@@ -1,0 +1,36 @@
+# Hei ansiblen maailma
+
+## Keskeiset tavoitteet:
+
+- Katsoa uudelleen ssh avainparin generöiminen
+- Avainparin kopioiminen ( 
+
+### SSH-yhteys
+SSH public key -kirjautuminen mahdollistaa sisäänkirjautumisen ilmansalasanaa. Avainpari luodaan
+komennolla ssh-keygen ja julkinen avain kopioidaan palvelimelle komennolla ssh-copy-id. 
+Tämän jälkeen kirjautuminen onnistuu automaattisesti ja soveltuu hyvin automaatioon.
+
+### Ansible 
+
+Ansiblella voidaan hallita koneita koodin avulla SSH:n yli. Harhoituksessa tehtiin yksinkertainen playbook,
+joka teki muutoksen localhostiin.
+
+### a) 
+SSH-demoni asennettiin paketinhallinnan avulla komennoilla sudo apt-get update ja sudo apt-get install ssh.
+Tämän jälkeen palvelu käynnistettiin ja asetettiin käynnistymään automaattisesti komennolla sudo systemctl enable --now ssh.
+
+### b) 
+Seuraavaksi automatisoitiin SSH-kirjautuminen julkisen avaimen avulla. Avainpari luotiin komennolla ssh-keygen, jossa hyväksyttiin oletusasetukset.
+
+### c)
+Ansible asennettiin komennolla sudo apt-get install ansible. Seuraavaksi luotiin inventory-tiedosto komennolla micro hosts.ini, johon lisättiin localhost. 
+! Tämä kertoo Ansiblelle, mitä konetta hallitaan. !
+Ansiblea testattiin komennolla ansible all -a "uptime", joka suoritti komennon localhostilla SSH:n yli. Tämä varmisti, että yhteys toimii oikein.
+Tämän jälkeen luotiin playbook komennolla micro site.yml, sekä rooli kansiorakenteella mkdir -p roles/hello/tasks. 
+Roolin tehtävät määriteltiin tiedostossa roles/hello/tasks/main.yml, jossa määriteltiin tiedoston luonti /tmp/-hakemistoon
+Playbook suoritettiin komennolla ansible-playbook site.yml. Ensimmäisellä ajokerralla tiedosto luotiin, ja toisella ajokerralla muutoksia ei enää tehty.
+Lopuksi varmistettiin toimivuus komennolla cat /tmp/hello-ansible, joka näytti luodun tiedoston sisällön.
+
+**Lähteet** 
+Tero KArvinen SSH public key - Login without password. Luettavissa https://terokarvinen.com/ssh-public-key-login-without-password/ Luettu 30.3.2026
+Tero Karvinen Hello Ansible. LUettavissa: https://terokarvinen.com/hello-ansible/ Luettu 31.3.2026
